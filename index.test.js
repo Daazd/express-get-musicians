@@ -17,4 +17,11 @@ describe('./musicians endpoint', () => {
         expect(Array.isArray(res.body)).toBe(true);
     });
 
-   });
+    test('should return a single musician', async () => {
+        const musician = await Musician.findOne();
+        const res = await request(app).get(`/musicians/${musician.id}`);
+        expect(res.status).toBe(200);
+        expect(res.body.id).toBe(musician.id);
+    });
+
+});

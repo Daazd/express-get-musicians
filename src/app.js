@@ -12,7 +12,10 @@ app.get("/musicians", async (req, res) => {
     res.json(musicians);
 });
 
-
+app.get("/musicians/:id", async (req, res) => {
+    const musician = await Musician.findByPk(req.params.id);
+    res.json(musician);
+});
 
 
 
