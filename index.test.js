@@ -9,6 +9,11 @@ const { Musician } = require('./models/index')
 const { Band } = require('./models/index')
 const app = require('./server');
 const seedMusician = require("./seedData");
+const express = require('express');
+const router = require('./routes/musicians');
+
+app.use(express.json());
+app.use(router);
 
 
 describe('./musicians endpoint', () => {
@@ -81,4 +86,29 @@ describe('./musicians endpoint', () => {
         expect(res.body.id).toBe(musician.id);
     });
 
+    it('should create a new musician if name and instrument are valid', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({ name: 'Test Musician', instrument: 'Guitar' });
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toHaveProperty('name', 'Test Musician');
+        expect(res.body).toHaveProperty('instrument', 'Guitar');
+    });
+
+    it('should return 400 if name is not between 2 and 20 characters', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({ name: 'T', instrument: 'Guitar' });
+
+        expect(res.statusCode).toEqual(400);
+    });
+
+    it('should return 400 if instrument is not between 2 and 20 characters', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({ name: 'Test Musician', instrument: 'G' });
+
+        expect(res.statusCode).toEqual(400);
+    });
 });
